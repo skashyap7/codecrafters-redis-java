@@ -25,7 +25,7 @@ public class Main {
       String clientCommand;
       while ((clientCommand = inputReader.readLine()) != null) {
         // Respond to client using OutputStream as in previous stage
-        output.print(PONG_REPLY);
+        output.print("+PONG\r\n");
         output.flush();
       }
       //System.out.println("Data recieved "+ is.readAllBytes().toString());
