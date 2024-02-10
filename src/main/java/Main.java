@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class Main {
   public static final int REDIS_CONNECTION_PORT = 6379;
-  public static final String PONG_REPLY= "+PONG\\r\\n\"";
+  public static final String PONG_REPLY= "+PONG/\r/\n";
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
