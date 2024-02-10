@@ -1,10 +1,12 @@
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
   public static final int REDIS_CONNECTION_PORT = 6379;
+  public static final String PONG_REPLY= "+PONG\\r\\n\"";
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
@@ -16,6 +18,11 @@ public class Main {
       serverSocket.setReuseAddress(true);
       // wait for connection from client
       clientSocket = serverSocket.accept();
+      // Send a response for PING
+      boolean autoflush = true;
+      PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
+      output.print(PONG_REPLY);
+      output.flush();
       // read a few bytes from clietSocket
       //InputStream is = clientSocket.getInputStream();
       //System.out.println("Data recieved "+ is.readAllBytes().toString());
