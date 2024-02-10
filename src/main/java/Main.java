@@ -17,13 +17,12 @@ public class Main {
       // wait for connection from client
       clientSocket = serverSocket.accept();
       // Send a response for PING
-      boolean autoflush = true;
-      PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
-
       // read a few bytes from clientSocket
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       String clientCommand;
       while ((clientCommand = inputReader.readLine()) != null) {
+        boolean autoflush = true;
+        PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
         // Respond to client using OutputStream as in previous stage
         output.print("+PONG\r\n");
         output.flush();
@@ -40,26 +39,5 @@ public class Main {
         System.out.println(" IOException: "+ ex.getMessage());
       }
     }
-
-    //  Uncomment this block to pass the first stage
-    //    ServerSocket serverSocket = null;
-    //    Socket clientSocket = null;
-    //    int port = 6379;
-    //    try {
-    //      serverSocket = new ServerSocket(port);
-    //      serverSocket.setReuseAddress(true);
-    //      // Wait for connection from client.
-    //      clientSocket = serverSocket.accept();
-    //    } catch (IOException e) {
-    //      System.out.println("IOException: " + e.getMessage());
-    //    } finally {
-    //      try {
-    //        if (clientSocket != null) {
-    //          clientSocket.close();
-    //        }
-    //      } catch (IOException e) {
-    //        System.out.println("IOException: " + e.getMessage());
-    //      }
-    //    }
   }
 }
