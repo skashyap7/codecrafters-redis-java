@@ -1,11 +1,35 @@
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
+  public static final int REDIS_CONNECTION_PORT = 6379;
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
+
+    ServerSocket serverSocket = null;
+    Socket clientSocket = null;
+    try {
+      serverSocket = new ServerSocket(REDIS_CONNECTION_PORT);
+      serverSocket.setReuseAddress(true);
+      // wait for connection from client
+      clientSocket = serverSocket.accept();
+      // read a few bytes from clietSocket
+      //InputStream is = clientSocket.getInputStream();
+      //System.out.println("Data recieved "+ is.readAllBytes().toString());
+    } catch (IOException ex) {
+      System.out.println("IOException: " + ex.getMessage());
+    } finally {
+      try {
+        if (clientSocket != null) {
+          clientSocket.close();
+        }
+      } catch (IOException ex) {
+        System.out.println(" IOException: "+ ex.getMessage());
+      }
+    }
 
     //  Uncomment this block to pass the first stage
     //    ServerSocket serverSocket = null;
