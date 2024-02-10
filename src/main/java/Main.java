@@ -21,7 +21,7 @@ public class Main {
       // Send a response for PING
       boolean autoflush = true;
       PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
-      output.print(PONG_REPLY);
+      output.print("+PONG\r\n");
       output.flush();
       // read a few bytes from clietSocket
       //InputStream is = clientSocket.getInputStream();
