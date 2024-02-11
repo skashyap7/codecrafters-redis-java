@@ -22,15 +22,15 @@ public class Main {
       output.print("+PONG\r\n");
       output.flush();
       // read a few bytes from clientSocket
-//      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-//      String clientCommand;
-//      while ((clientCommand = inputReader.readLine()) != null) {
-//        if (clientCommand.equalsIgnoreCase("ping")) {
-//          // Respond to client using OutputStream as in previous stage
-//          output.print("+PONG\r\n");
-//          output.flush();
-//        }
-//      }
+      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      String clientCommand;
+      while ((clientCommand = inputReader.readLine()) != null) {
+        if (clientCommand.equalsIgnoreCase("ping")) {
+          // Respond to client using OutputStream as in previous stage
+          output.print("+PONG\r\n");
+          output.flush();
+        }
+      }
       //System.out.println("Data recieved "+ is.readAllBytes().toString());
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
