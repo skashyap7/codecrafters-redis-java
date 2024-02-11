@@ -51,7 +51,7 @@ public class Main {
           // Respond to client using OutputStream as in previous stage
           output.println("+PONG\r");
         }
-        else if (clientCommand.contains("ECHO")){
+        else if (clientCommand.contains("ECHO") || clientCommand.contains("echo")){
           handleEcho(clientCommand, output);
         }
       }
