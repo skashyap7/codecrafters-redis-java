@@ -53,16 +53,18 @@ public class Main {
       String clientCommand;
       Command currentCommand = new Command();
       while ((clientCommand = inputReader.readLine()) != null) {
-        System.out.println(" Echo command = " + clientCommand );
-        currentCommand.process(clientCommand);
-        if (currentCommand.isComandComplete()) {
-          currentCommand.runCommand(output);
-          currentCommand = new Command();
+        if (clientCommand.equalsIgnoreCase("ping")) {
+          // Respond to client using OutputStream as in previous stage
+          output.println("+PONG\r");
         }
-//        if (clientCommand.equalsIgnoreCase("ping")) {
-//          // Respond to client using OutputStream as in previous stage
-//          output.println("+PONG\r");
-//        }
+        else {
+          System.out.println(" Echo command = " + clientCommand );
+          currentCommand.process(clientCommand);
+          if (currentCommand.isComandComplete()) {
+            currentCommand.runCommand(output);
+            currentCommand = new Command();
+          }
+        }
       }
     } catch (IOException e) {
       System.out.println(e);
