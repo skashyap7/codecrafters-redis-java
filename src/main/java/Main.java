@@ -1,6 +1,10 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
   public static final int REDIS_CONNECTION_PORT = 6379;
@@ -8,16 +12,23 @@ public class Main {
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
-
     ServerSocket serverSocket = null;
     Socket clientSocket = null;
     try {
       serverSocket = new ServerSocket(REDIS_CONNECTION_PORT);
       serverSocket.setReuseAddress(true);
+      // Start Executor service
+      ExecutorService executorService = new ThreadPoolExecutor(1, 10, 10L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
       // wait for connection from client
       clientSocket = serverSocket.accept();
       // Send a response for PING
-      handleRequest(clientSocket);
+      Socket finalClientSocket = clientSocket;
+      executorService.submit(new Runnable() {
+        @Override
+        public void run() {
+          handleRequest(finalClientSocket);
+        }
+      });
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
     } finally {
@@ -30,7 +41,6 @@ public class Main {
       }
     }
   }
-
   private static void handleRequest(Socket clientSocket) {
     boolean autoflush = true;
     try (PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush)) {
