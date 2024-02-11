@@ -53,17 +53,11 @@ public class Main {
       String clientCommand;
       Command currentCommand = new Command();
       while ((clientCommand = inputReader.readLine()) != null) {
-        if (clientCommand.equalsIgnoreCase("ping")) {
-          // Respond to client using OutputStream as in previous stage
-          output.println("+PONG\r");
-        }
-        else {
-          System.out.println(" Echo command = " + clientCommand );
-          currentCommand.process(clientCommand);
-          if (currentCommand.isComandComplete()) {
-            currentCommand.runCommand(output);
-            currentCommand = new Command();
-          }
+        System.out.println(" Echo command = " + clientCommand );
+        currentCommand.process(clientCommand);
+        if (currentCommand.isComandComplete()) {
+          currentCommand.runCommand(output);
+          currentCommand = new Command();
         }
       }
     } catch (IOException e) {
@@ -83,7 +77,7 @@ public class Main {
     int currentLength = 0;
     String current;
     public void process(String str) {
-      System.out.println(" Processing data = " + str);
+      //System.out.println(" Processing data = " + str);
       if (!dataTypeProcessed) {
         char firstByte = str.charAt(0);
         switch (firstByte) {
@@ -147,8 +141,6 @@ public class Main {
             arguments.add(current);
           }
           dataProcessed++;
-          System.out.println(" Data Processed = " + dataProcessed);
-          System.out.println(" Length of Data = " + lengthData);
         }
       }
     }
@@ -164,6 +156,9 @@ public class Main {
           String outputStr = String.join(" ",arguments);
           System.out.println(outputStr);
           output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr);
+          break;
+        case "ping":
+          output.println("+PONG\r");
           break;
         default:
           System.out.println(" Unknown command "+ command);
