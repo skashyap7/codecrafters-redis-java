@@ -20,15 +20,17 @@ public class Main {
       // Start Executor service
       ExecutorService executorService = new ThreadPoolExecutor(1, 10, 10L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
       // wait for connection from client
-      clientSocket = serverSocket.accept();
-      // Send a response for PING
-      Socket finalClientSocket = clientSocket;
-      executorService.submit(new Runnable() {
-        @Override
-        public void run() {
-          handleRequest(finalClientSocket);
-        }
-      });
+      while (true) {
+        clientSocket = serverSocket.accept();
+        // Send a response for PING
+        Socket finalClientSocket = clientSocket;
+        executorService.submit(new Runnable() {
+          @Override
+          public void run() {
+            handleRequest(finalClientSocket);
+          }
+        });
+      }
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
     } finally {
