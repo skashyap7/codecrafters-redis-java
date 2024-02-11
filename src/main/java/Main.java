@@ -49,6 +49,7 @@ public class Main {
       String clientCommand;
       StringBuilder builder = new StringBuilder();
       boolean isPing  = false;
+      int counter = 0;
       while ((clientCommand = inputReader.readLine()) != null) {
         System.out.println(" Echo command = " + clientCommand );
         if (clientCommand.equalsIgnoreCase("ping")) {
@@ -57,8 +58,10 @@ public class Main {
           output.println("+PONG\r");
         }
         else {
-          builder.append(clientCommand);
-          builder.append(" ");
+          ++counter;
+          if (counter == 5) {
+            output.println(clientCommand);
+          }
         }
       }
       if (!isPing) {
