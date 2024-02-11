@@ -83,6 +83,7 @@ public class Main {
     int currentLength = 0;
     String current;
     public void process(String str) {
+      System.out.println(" Processing data = " + str);
       if (!dataTypeProcessed) {
         char firstByte = str.charAt(0);
         switch (firstByte) {
@@ -146,6 +147,8 @@ public class Main {
             arguments.add(current);
           }
           dataProcessed++;
+          System.out.println(" Data Processed = " + dataProcessed);
+          System.out.println(" Data Processed = " + lengthData);
         }
       }
     }
@@ -155,6 +158,7 @@ public class Main {
     }
 
     public void runCommand(PrintWriter output) {
+      System.out.println(" Command = " + command);
       switch (command.toLowerCase()) {
         case "echo":
           String outputStr = String.join(" ",arguments);
