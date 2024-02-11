@@ -22,14 +22,11 @@ public class Main {
       // wait for connection from client
       while (true) {
         clientSocket = serverSocket.accept();
+        final Socket currentSocketConnection = clientSocket;
         // Send a response for PING
-        Socket finalClientSocket = clientSocket;
-        executorService.submit(new Runnable() {
-          @Override
-          public void run() {
-            handleRequest(finalClientSocket);
-          }
-        });
+        new Thread(() -> {
+            handleRequest(currentSocketConnection);
+        }).start();
       }
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
