@@ -166,7 +166,7 @@ public class Main {
         case "set":
           long expiry = 0L;
           if (this.arguments.size() > 2 && arguments.get(2).equalsIgnoreCase("px")) {
-            expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(4));
+            expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(3));
           }
           redisStore.put(this.arguments.get(0), new KeyValue(this.arguments.get(1), expiry));
           output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
