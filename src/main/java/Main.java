@@ -75,8 +75,7 @@ public class Main {
     // and Bulk Strings just use them as is
     String protocolTerminator = "\r\n";
     String[] parts = clientCommand.split(protocolTerminator);
-    if (parts.length < 3 || parts[1].equalsIgnoreCase("4")
-    || !parts[2].equalsIgnoreCase("ECHO")) {
+    if (parts.length < 3) {
       throw new IOException("Invalid argument");
     }
     else {
