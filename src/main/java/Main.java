@@ -47,15 +47,21 @@ public class Main {
       // read a line from clientSocket
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       String clientCommand;
+      StringBuilder builder = new StringBuilder();
+      boolean isPing  = false;
       while ((clientCommand = inputReader.readLine()) != null) {
         System.out.println(" Echo command = " + clientCommand );
         if (clientCommand.equalsIgnoreCase("ping")) {
+          isPing = true;
           // Respond to client using OutputStream as in previous stage
           output.println("+PONG\r");
         }
-        else if (clientCommand.contains("ECHO") || clientCommand.contains("echo")){
-          handleEcho(clientCommand, output);
+        else {
+          builder.append(clientCommand);
         }
+      }
+      if (!isPing) {
+        handleEcho(builder.toString(), output);
       }
     } catch (IOException e) {
       System.out.println(e);
