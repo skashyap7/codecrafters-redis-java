@@ -58,6 +58,7 @@ public class Main {
         }
         else {
           builder.append(clientCommand);
+          builder.append(" ");
         }
       }
       if (!isPing) {
@@ -73,7 +74,7 @@ public class Main {
     System.out.println(" Echo command = " + clientCommand );
     // Since the ECHO format is already known to be an array
     // and Bulk Strings just use them as is
-    String protocolTerminator = "\r\n";
+    String protocolTerminator = " ";
     String[] parts = clientCommand.split(protocolTerminator);
     if (parts.length < 3) {
       throw new IOException("Invalid argument");
