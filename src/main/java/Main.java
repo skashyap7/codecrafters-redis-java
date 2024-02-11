@@ -131,7 +131,7 @@ public class Main {
             break;
         }
         this.dataTypeProcessed = true;
-        this.lengthData = str.charAt(1);
+        this.lengthData = Integer.parseInt(String.valueOf(str.charAt(1)));
         return;
       }
       if (dataProcessed < lengthData) {
@@ -148,7 +148,7 @@ public class Main {
           }
           dataProcessed++;
           System.out.println(" Data Processed = " + dataProcessed);
-          System.out.println(" Data Processed = " + lengthData);
+          System.out.println(" Length of Data = " + lengthData);
         }
       }
     }
