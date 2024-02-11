@@ -19,14 +19,18 @@ public class Main {
       // Send a response for PING
       boolean autoflush = true;
       PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
+      output.print("+PONG\r\n");
+      output.flush();
       // read a few bytes from clientSocket
-      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-      String clientCommand;
-      while ((clientCommand = inputReader.readLine()) != null) {
-        // Respond to client using OutputStream as in previous stage
-        output.println("+PONG\r\n");
-        output.flush();
-      }
+//      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+//      String clientCommand;
+//      while ((clientCommand = inputReader.readLine()) != null) {
+//        if (clientCommand.equalsIgnoreCase("ping")) {
+//          // Respond to client using OutputStream as in previous stage
+//          output.print("+PONG\r\n");
+//          output.flush();
+//        }
+//      }
       //System.out.println("Data recieved "+ is.readAllBytes().toString());
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
