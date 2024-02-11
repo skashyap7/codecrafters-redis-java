@@ -51,10 +51,39 @@ public class Main {
           // Respond to client using OutputStream as in previous stage
           output.println("+PONG\r");
         }
+        else if (clientCommand.contains("ECHO")){
+          handleEcho(clientCommand, output);
+        }
       }
     } catch (IOException e) {
       System.out.println(e);
       e.printStackTrace();
+    }
+  }
+
+  private static void handleEcho(String clientCommand, PrintWriter output) throws IOException {
+    // Since the ECHO format is already known to be an array
+    // and Bulk Strings just use them as is
+    String protocolTerminator = "\r\n";
+    String[] parts = clientCommand.split(protocolTerminator);
+    if (parts.length < 3 || parts[1].equalsIgnoreCase("4")
+    || parts[2].equalsIgnoreCase("ECHO")) {
+      throw new IOException("Invalid argument");
+    }
+    else {
+      output.print(parts[3]);
+    }
+  }
+
+  // Sample for ECHO  : *2\r\n$4\r\nECHO\r\n$3\r\nhey\r\n
+  // Bulk Strings: $<length>\r\n<data>\r\n
+  private static void handleCommand(String clientCommand) {
+    String protocolTerminator = "\r\n"; // As per RESP \r\n is the protocol terminator
+    char[] chars = clientCommand.toCharArray();
+    int index = 0;
+
+    while (index < chars.length) {
+
     }
   }
 }
