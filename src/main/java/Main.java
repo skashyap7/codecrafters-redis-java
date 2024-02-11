@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
   public static final int REDIS_CONNECTION_PORT = 6379;
   public static final String PONG_REPLY= "+PONG\r\n";
-  public static final Map<String,String> redisStore = new HashMap<>();
+  public static final Map<String,KeyValue> redisStore = new HashMap<>();
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
@@ -164,22 +164,45 @@ public class Main {
           output.println("+PONG\r");
           break;
         case "set":
-          redisStore.put(this.arguments.get(0), this.arguments.get(1));
+          long expiry = 0L;
+          if (this.arguments.size() > 2 || arguments.get(2).equalsIgnoreCase("px")) {
+            expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(4));
+          }
+          redisStore.put(this.arguments.get(0), new KeyValue(this.arguments.get(1), expiry));
           output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
+
           break;
         case "get":
-          String value = redisStore.get(this.arguments.get(0));
-          if (value == null) {
-            value = "nil";
+          String key = this.arguments.get(0);
+          KeyValue value = redisStore.get(key);
+          boolean isExpired = (value.expiry <= System.currentTimeMillis());
+          String val;
+          if (!redisStore.containsKey(key) || isExpired) {
+            val = "nil";
+          }
+          else {
+            val = value.val;
           }
           System.out.println(value);
-          output.printf("$%d\r\n%s\r\n", value.length(), value);
+          output.printf("$%d\r\n%s\r\n", val.length(), val);
           break;
         default:
           System.out.println(" Unknown command "+ command);
       }
     }
 
+  }
+
+  public static class KeyValue {
+    String val;
+    long expiry;
+
+    public KeyValue(){}
+
+    public KeyValue(String _val, long _expiry) {
+      this.val = _val;
+      this.expiry = _expiry;
+    }
   }
 }
 
