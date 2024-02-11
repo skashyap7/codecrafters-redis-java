@@ -57,7 +57,7 @@ public class Main {
           // Respond to client using OutputStream as in previous stage
           output.println("+PONG\r");
         }
-        else {
+        else if (!isPing){
           ++counter;
           if (counter == 5) {
             output.println(clientCommand);
