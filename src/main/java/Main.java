@@ -64,9 +64,6 @@ public class Main {
           }
         }
       }
-      if (!isPing) {
-        handleEcho(builder.toString(), output);
-      }
     } catch (IOException e) {
       System.out.println(e);
       e.printStackTrace();
