@@ -17,21 +17,7 @@ public class Main {
       // wait for connection from client
       clientSocket = serverSocket.accept();
       // Send a response for PING
-      boolean autoflush = true;
-      PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush);
-      output.print("+PONG\r\n");
-      output.flush();
-      // read a few bytes from clientSocket
-      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-      String clientCommand;
-      while ((clientCommand = inputReader.readLine()) != null) {
-        if (clientCommand.equalsIgnoreCase("ping")) {
-          // Respond to client using OutputStream as in previous stage
-          output.print("+PONG\r\n");
-          output.flush();
-        }
-      }
-      //System.out.println("Data recieved "+ is.readAllBytes().toString());
+      handleRequest(clientSocket);
     } catch (IOException ex) {
       System.out.println("IOException: " + ex.getMessage());
     } finally {
@@ -42,6 +28,24 @@ public class Main {
       } catch (IOException ex) {
         System.out.println(" IOException: "+ ex.getMessage());
       }
+    }
+  }
+
+  private static void handleRequest(Socket clientSocket) {
+    boolean autoflush = true;
+    try (PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush)) {
+      // read a few bytes from clientSocket
+      BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+      String clientCommand;
+      while ((clientCommand = inputReader.readLine()) != null) {
+        if (clientCommand.equalsIgnoreCase("ping")) {
+          // Respond to client using OutputStream as in previous stage
+          output.println("+PONG\r");
+        }
+      }
+    } catch (IOException e) {
+      System.out.println(e);
+      e.printStackTrace();
     }
   }
 }
