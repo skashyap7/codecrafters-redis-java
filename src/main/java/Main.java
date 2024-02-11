@@ -44,10 +44,11 @@ public class Main {
 
     boolean autoflush = true;
     try (PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), autoflush)) {
-      // read a few bytes from clientSocket
+      // read a line from clientSocket
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       String clientCommand;
       while ((clientCommand = inputReader.readLine()) != null) {
+        System.out.println(" Echo command = " + clientCommand );
         if (clientCommand.equalsIgnoreCase("ping")) {
           // Respond to client using OutputStream as in previous stage
           output.println("+PONG\r");
