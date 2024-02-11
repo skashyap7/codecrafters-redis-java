@@ -2,7 +2,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
   public static final int REDIS_CONNECTION_PORT = 6379;
   public static final String PONG_REPLY= "+PONG\r\n";
+  public static final Map<String,String> redisStore = new HashMap<>();
   public static void main(String[] args){
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     System.out.println("Logs from your program will appear here!");
@@ -159,6 +162,18 @@ public class Main {
           break;
         case "ping":
           output.println("+PONG\r");
+          break;
+        case "set":
+          redisStore.put(this.arguments.get(0), this.arguments.get(1));
+          output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
+          break;
+        case "get":
+          String value = redisStore.get(this.arguments.get(0));
+          if (value == null) {
+            value = "nil";
+          }
+          System.out.println(value);
+          output.printf("$%d\r\n%s\r\n", value.length(), value);
           break;
         default:
           System.out.println(" Unknown command "+ command);
