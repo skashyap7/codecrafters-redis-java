@@ -163,7 +163,7 @@ public class Main {
         case "echo":
           String outputStr = String.join(" ",arguments);
           System.out.println(outputStr);
-          output.println(outputStr);
+          output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr);
           break;
         default:
           System.out.println(" Unknown command "+ command);
