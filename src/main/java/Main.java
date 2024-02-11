@@ -22,7 +22,6 @@ public class Main {
       // wait for connection from client
       while (true) {
         clientSocket = serverSocket.accept();
-        System.out.println(" Starting My server");
         final Socket currentSocketConnection = clientSocket;
         // Send a response for PING
         new Thread(() -> {
@@ -73,6 +72,7 @@ public class Main {
       throw new IOException("Invalid argument");
     }
     else {
+      System.out.println(" Value = " + parts[4]);
       output.print(parts[4]);
     }
   }
