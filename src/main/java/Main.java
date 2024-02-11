@@ -63,6 +63,7 @@ public class Main {
   }
 
   private static void handleEcho(String clientCommand, PrintWriter output) throws IOException {
+    System.out.println(" Echo command = " + clientCommand );
     // Since the ECHO format is already known to be an array
     // and Bulk Strings just use them as is
     String protocolTerminator = "\r\n";
