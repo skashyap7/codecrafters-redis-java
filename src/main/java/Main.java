@@ -176,15 +176,13 @@ public class Main {
           String key = this.arguments.get(0);
           KeyValue value = redisStore.get(key);
           boolean isExpired = (value.expiry <= System.currentTimeMillis() && (value.expiry != 0L));
-          String val;
           if (!redisStore.containsKey(key) || isExpired) {
-            val = "nil";
+            output.printf("$-1\r\n");
           }
           else {
-            val = value.val;
+            System.out.println(value);
+            output.printf("$%d\r\n%s\r\n", value.val.length(), value.val);
           }
-          System.out.println(value);
-          output.printf("$%d\r\n%s\r\n", val.length(), val);
           break;
         default:
           System.out.println(" Unknown command "+ command);
