@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,6 +42,8 @@ public class Main {
       }
     }
   }
+
+
   private static void handleRequest(Socket clientSocket) {
 
     boolean autoflush = true;
@@ -47,22 +51,18 @@ public class Main {
       // read a line from clientSocket
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       String clientCommand;
-      StringBuilder builder = new StringBuilder();
-      boolean isPing  = false;
-      int counter = 0;
+      Command currentCommand = new Command();
       while ((clientCommand = inputReader.readLine()) != null) {
         System.out.println(" Echo command = " + clientCommand );
-        if (clientCommand.equalsIgnoreCase("ping")) {
-          isPing = true;
-          // Respond to client using OutputStream as in previous stage
-          output.println("+PONG\r");
+        currentCommand.process(clientCommand);
+        if (currentCommand.isComandComplete()) {
+          currentCommand.runCommand(output);
+          currentCommand = new Command();
         }
-        else if (!isPing){
-          ++counter;
-          if (counter == 5) {
-            output.println(clientCommand);
-          }
-        }
+//        if (clientCommand.equalsIgnoreCase("ping")) {
+//          // Respond to client using OutputStream as in previous stage
+//          output.println("+PONG\r");
+//        }
       }
     } catch (IOException e) {
       System.out.println(e);
@@ -70,30 +70,100 @@ public class Main {
     }
   }
 
-  private static void handleEcho(String clientCommand, PrintWriter output) throws IOException {
-    System.out.println(" Echo command = " + clientCommand );
-    // Since the ECHO format is already known to be an array
-    // and Bulk Strings just use them as is
-    String protocolTerminator = " ";
-    String[] parts = clientCommand.split(protocolTerminator);
-    if (parts.length < 3) {
-      throw new IOException("Invalid argument");
-    }
-    else {
-      System.out.println(" Value = " + parts[4]);
-      output.print(parts[4]);
-    }
-  }
+  public static class Command {
+    boolean dataTypeProcessed = false;
+    String dataType;
+    int lengthData = 0;
+    int dataProcessed = 0;
 
-  // Sample for ECHO  : *2\r\n$4\r\nECHO\r\n$3\r\nhey\r\n
-  // Bulk Strings: $<length>\r\n<data>\r\n
-  private static void handleCommand(String clientCommand) {
-    String protocolTerminator = "\r\n"; // As per RESP \r\n is the protocol terminator
-    char[] chars = clientCommand.toCharArray();
-    int index = 0;
-
-    while (index < chars.length) {
-
+    String command;
+    List<String> arguments = new ArrayList<>();
+    int currentLength = 0;
+    String current;
+    public void process(String str) {
+      if (!dataTypeProcessed) {
+        char firstByte = str.charAt(0);
+        switch (firstByte) {
+          case '+':
+            this.dataType = "Simple strings";
+            break;
+          case '-':
+            this.dataType = "Simple Errors";
+            break;
+          case ':':
+            this.dataType = "Integers";
+            break;
+          case '$':
+            this.dataType = "Bulk strings";
+            break;
+          case '*':
+            this.dataType = "Arrays";
+            break;
+          case '_':
+            this.dataType = "Nulls";
+            break;
+          case '#':
+            this.dataType = "Booleans";
+            break;
+          case ',':
+            this.dataType = "Doubles";
+            break;
+          case '(':
+            this.dataType = "Big numbers";
+            break;
+          case '!':
+            this.dataType = "Bulk errors";
+            break;
+          case '=':
+            this.dataType = "Verbatim strings";
+            break;
+          case '%':
+            this.dataType = "Maps";
+            break;
+          case '~':
+            this.dataType = "Sets";
+            break;
+          case '>':
+            this.dataType = "Pushes";
+            break;
+        }
+        this.dataTypeProcessed = true;
+        this.lengthData = str.charAt(1);
+        return;
+      }
+      if (dataProcessed < lengthData) {
+        if (str.startsWith("$")) {
+          currentLength = str.charAt(1);
+        }
+        else {
+          current = str;
+          if (command == null) {
+            command = current;
+          }
+          else {
+            arguments.add(current);
+          }
+          dataProcessed++;
+        }
+      }
     }
+
+    public boolean isComandComplete() {
+      return (dataProcessed == lengthData);
+    }
+
+    public void runCommand(PrintWriter output) {
+      switch (command.toLowerCase()) {
+        case "echo":
+          String outputStr = String.join(" ",arguments);
+          System.out.println(outputStr);
+          output.println(outputStr);
+          break;
+        default:
+          System.out.println(" Unknown command "+ command);
+      }
+    }
+
   }
 }
+
