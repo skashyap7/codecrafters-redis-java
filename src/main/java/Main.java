@@ -175,7 +175,7 @@ public class Main {
         case "get":
           String key = this.arguments.get(0);
           KeyValue value = redisStore.get(key);
-          boolean isExpired = (value.expiry <= System.currentTimeMillis());
+          boolean isExpired = (value.expiry <= System.currentTimeMillis() && (value.expiry != 0L));
           String val;
           if (!redisStore.containsKey(key) || isExpired) {
             val = "nil";
