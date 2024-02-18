@@ -245,20 +245,23 @@ public class Main {
       this.role = _role;
     }
     public void outputRespResponse(PrintWriter output) {
-      String roleString = String.format("role:%s\nmaster_replid:%s\nmaster_repl_offset:%s", this.role, this.master_replid, this.master_repl_offset);
-      output.printf("$%d\r\n%s\r\n", roleString.length(), roleString);
+      StringBuilder stringBuilder = new StringBuilder();
+      //String roleString = String.format("role:%s\nmaster_replid:%s\nmaster_repl_offset:%s", this.role, this.master_replid, this.master_repl_offset);
+      String replicationString = "# Replication";
+      stringBuilder.append(String.format("%s\n", replicationString));
       //output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
           String line = String.format("%s:%s", f.getName(), f.get(this).toString());
           System.out.println(line);
-          output.printf("$%d\r\n%s\r\n", line.length(), line);
+          stringBuilder.append(String.format("%s\n", line));
         }
       }
       catch (IllegalAccessException ex) {
         System.out.println("Caught exception while accessing member fields" + ex.getMessage());
       }
+      output.printf("$%d\r\n%s\r\n", stringBuilder.toString().length(), stringBuilder.toString());
     }
   }
 }
