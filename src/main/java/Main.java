@@ -164,8 +164,8 @@ public class Main {
           executeGet(output);
           break;
         case "info":
-            executeInfo(output);
-            break;
+          executeInfo(output);
+          break;
         default:
           System.out.println(" Unknown command "+ command);
       }
@@ -236,14 +236,16 @@ public class Main {
     public InfoReply(String _role) {
       this.role = _role;
     }
-    public void  outputRespResponse(PrintWriter printWriter) {
-      printWriter.printf("$%d\r\n%s\r\n", "# Replication".length(), "# Replication");
+    public void outputRespResponse(PrintWriter output) {
+      String replicationString = "# Replication";
+      System.out.println(replicationString);
+      output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
           String line = String.format("%s : %s", f.getName(), f.get(this).toString());
           System.out.println(line);
-          printWriter.printf("$%d\r\n%s\r\n", line.length(), line);
+          output.printf("$%d\r\n%s\r\n", line.length(), line);
         }
       }
       catch (IllegalAccessException ex) {
