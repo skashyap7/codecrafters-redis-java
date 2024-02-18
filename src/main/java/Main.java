@@ -242,6 +242,7 @@ public class Main {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
           String line = String.format("%s : %s", f.getName(), f.get(this).toString());
+          System.out.println(line);
           printWriter.printf("$%d\r\n%s\r\n", line.length(), line);
         }
       }
