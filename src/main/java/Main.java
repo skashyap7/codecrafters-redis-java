@@ -233,7 +233,7 @@ public class Main {
   public static class InfoReply {
     public String role;
     public int connected_slaves = 0;
-    public String master_replid = "";
+    public String master_replid = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb";
     public int master_repl_offset = 0;
     public int second_repl_offset = -1;
     public int repl_backlog_active = 0;
@@ -247,6 +247,10 @@ public class Main {
     public void outputRespResponse(PrintWriter output) {
       String roleString = String.format("role:%s", this.role);
       output.printf("$%d\r\n%s\r\n", roleString.length(), roleString);
+      String master_replid = String.format("master_replid:%s", this.master_replid);
+      output.printf("$%d\r\n%s\r\n", master_replid.length(), master_replid);
+      String master_repl_offset = String.format("master_repl_offset:%s", this.master_repl_offset);
+      output.printf("$%d\r\n%s\r\n", master_repl_offset.length(), master_repl_offset);
       //output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
