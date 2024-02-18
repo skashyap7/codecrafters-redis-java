@@ -206,7 +206,7 @@ public class Main {
     private void executeInfo(PrintWriter output) {
       System.out.println("INFO command");
       InfoReply infoReply = new InfoReply("master");
-      output.println(infoReply.outputRespResponse());
+      output.print(infoReply.outputRespResponse());
     }
   }
 
