@@ -9,13 +9,21 @@ import java.util.Map;
 
 public class Main {
   public static final int DEFAULT_REDIS_CONNECTION_PORT = 6379;
+  public static int masterPort = 0;
+  public static String masterHost = null;
   public static final Map<String,KeyValue> redisStore = new HashMap<>();
+  public static boolean isMaster = true;
   public static void main(String[] args){
     ServerSocket serverSocket = null;
     Socket clientSocket = null;
     int port = DEFAULT_REDIS_CONNECTION_PORT;
     if (args.length >= 2 && (args[0].equalsIgnoreCase("--port") || args[0].equalsIgnoreCase("-p")) ) {
       port = Integer.parseInt(args[1]);
+    }
+    if (args.length >= 4 && args[2].equalsIgnoreCase("--replicaof")) {
+      masterHost = args[3];
+      masterPort = Integer.parseInt(args[4]);
+      isMaster = false;
     }
     try {
       serverSocket = new ServerSocket(port);
@@ -205,7 +213,7 @@ public class Main {
 
     private void executeInfo(PrintWriter output) {
       System.out.println("INFO command");
-      InfoReply infoReply = new InfoReply("master");
+      InfoReply infoReply = new InfoReply(isMaster ? "master" : "slave");
       infoReply.outputRespResponse(output);
     }
   }
