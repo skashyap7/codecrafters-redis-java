@@ -5,20 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
   public static final int DEFAULT_REDIS_CONNECTION_PORT = 6379;
-  public static final String PONG_REPLY= "+PONG\r\n";
   public static final Map<String,KeyValue> redisStore = new HashMap<>();
   public static void main(String[] args){
     ServerSocket serverSocket = null;
     Socket clientSocket = null;
     int port = DEFAULT_REDIS_CONNECTION_PORT;
-    if (args.length >= 2 && args[0].equalsIgnoreCase("--port")) {
+    if (args.length >= 2 && (args[0].equalsIgnoreCase("--port") || args[0].equalsIgnoreCase("-p")) ) {
       port = Integer.parseInt(args[1]);
     }
     try {
@@ -148,7 +143,7 @@ public class Main {
       }
     }
 
-    public boolean isComandComplete() {
+    private boolean isComandComplete() {
       return (dataProcessed == lengthData);
     }
 
@@ -156,39 +151,60 @@ public class Main {
       System.out.println(" Command = " + command);
       switch (command.toLowerCase()) {
         case "echo":
-          String outputStr = String.join(" ",arguments);
-          System.out.println(outputStr);
-          output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr);
+          executeEcho(output);
           break;
         case "ping":
-          output.println("+PONG\r");
+          executePing(output);
           break;
         case "set":
-          long expiry = 0L;
-          if (this.arguments.size() > 2 && arguments.get(2).equalsIgnoreCase("px")) {
-            expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(3));
-          }
-          redisStore.put(this.arguments.get(0), new KeyValue(this.arguments.get(1), expiry));
-          output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
-
+          executeSet(output);
           break;
         case "get":
-          String key = this.arguments.get(0);
-          KeyValue value = redisStore.get(key);
-          boolean isExpired = (value.expiry <= System.currentTimeMillis() && (value.expiry != 0L));
-          if (!redisStore.containsKey(key) || isExpired) {
-            output.printf("$-1\r\n");
-          }
-          else {
-            System.out.println(value);
-            output.printf("$%d\r\n%s\r\n", value.val.length(), value.val);
-          }
+          executeGet(output);
           break;
+        case "info":
+            executeInfo(output);
+            break;
         default:
           System.out.println(" Unknown command "+ command);
       }
     }
 
+    private void executeEcho(PrintWriter output) {
+      String outputStr = String.join(" ",arguments);
+      System.out.println(outputStr);
+      output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr);
+    }
+
+    private void executePing(PrintWriter output){
+      output.println("+PONG\r");
+    }
+
+    private void executeSet(PrintWriter output) {
+      long expiry = 0L;
+      if (this.arguments.size() > 2 && arguments.get(2).equalsIgnoreCase("px")) {
+        expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(3));
+      }
+      redisStore.put(this.arguments.get(0), new KeyValue(this.arguments.get(1), expiry));
+      output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
+    }
+
+    private void executeGet(PrintWriter output) {
+      String key = this.arguments.getFirst();
+      KeyValue value = redisStore.get(key);
+      boolean isExpired = (value.expiry <= System.currentTimeMillis() && (value.expiry != 0L));
+      if (!redisStore.containsKey(key) || isExpired) {
+        output.printf("$-1\r\n");
+      }
+      else {
+        System.out.println(value);
+        output.printf("$%d\r\n%s\r\n", value.val.length(), value.val);
+      }
+    }
+
+    private void executeInfo(PrintWriter output) {
+      System.out.println("INFO command");
+    }
   }
 
   public static class KeyValue {
