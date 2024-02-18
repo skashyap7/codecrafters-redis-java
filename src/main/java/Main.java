@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class Main {
       String clientCommand;
       Command currentCommand = new Command();
       while ((clientCommand = inputReader.readLine()) != null) {
-        System.out.println(" Echo command = " + clientCommand );
+        //System.out.println(" Echo command = " + clientCommand );
         currentCommand.process(clientCommand);
         if (currentCommand.isComandComplete()) {
           currentCommand.runCommand(output);
@@ -204,6 +205,8 @@ public class Main {
 
     private void executeInfo(PrintWriter output) {
       System.out.println("INFO command");
+      InfoReply infoReply = new InfoReply("master");
+      infoReply.outputRespResponse(output);
     }
   }
 
@@ -216,6 +219,35 @@ public class Main {
     public KeyValue(String _val, long _expiry) {
       this.val = _val;
       this.expiry = _expiry;
+    }
+  }
+
+  public static class InfoReply {
+    public String role;
+    public int connected_slaves = 0;
+    public String master_replid = "";
+    public int master_repl_offset = 0;
+    public int second_repl_offset = -1;
+    public int repl_backlog_active = 0;
+    public int repl_backlog_size = 1048576;
+    public int repl_backlog_first_byte_offset = 0;
+    public String repl_backlog_histlen = "";
+
+    public InfoReply(String _role) {
+      this.role = _role;
+    }
+    public void  outputRespResponse(PrintWriter printWriter) {
+      printWriter.printf("$%d\r\n%s\r\n", "# Replication".length(), "# Replication");
+      try {
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (Field f : fields) {
+          String line = String.format("%s : %s", f.getName(), f.get(this).toString());
+          printWriter.printf("$%d\r\n%s\r\n", line.length(), line);
+        }
+      }
+      catch (IllegalAccessException ex) {
+        System.out.println("Caught exception while accessing member fields" + ex.getMessage());
+      }
     }
   }
 }
