@@ -206,7 +206,7 @@ public class Main {
     private void executeInfo(PrintWriter output) {
       System.out.println("INFO command");
       InfoReply infoReply = new InfoReply("master");
-      infoReply.outputRespResponse(output);
+      output.println(infoReply.outputRespResponse());
     }
   }
 
@@ -236,21 +236,23 @@ public class Main {
     public InfoReply(String _role) {
       this.role = _role;
     }
-    public void outputRespResponse(PrintWriter output) {
+    public String outputRespResponse() {
+      StringBuilder buffer = new StringBuilder();
       String replicationString = "# Replication";
       System.out.println(replicationString);
-      output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
+      buffer.append(String.format("$%d\r\n%s\r\n", replicationString.length(), replicationString));
       try {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
           String line = String.format("%s : %s", f.getName(), f.get(this).toString());
           System.out.println(line);
-          output.printf("$%d\r\n%s\r\n", line.length(), line);
+          buffer.append(String.format("$%d\r\n%s\r\n", line.length(), line));
         }
       }
       catch (IllegalAccessException ex) {
         System.out.println("Caught exception while accessing member fields" + ex.getMessage());
       }
+      return buffer.toString();
     }
   }
 }
