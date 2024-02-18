@@ -239,12 +239,12 @@ public class Main {
     public void outputRespResponse(PrintWriter output) {
       String replicationString = "# Replication";
       System.out.println(replicationString);
-      output.printf("$%d\r\n%s\r\n", "role: master".length(), "role: master");
+      output.printf("$%d\r\n%s\r\n", "role: master".length(), "role:master");
       output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
-          String line = String.format("%s : %s", f.getName(), f.get(this).toString());
+          String line = String.format("%s:%s", f.getName(), f.get(this).toString());
           System.out.println(line);
           output.printf("$%d\r\n%s\r\n", line.length(), line);
         }
