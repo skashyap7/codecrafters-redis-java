@@ -11,19 +11,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-  public static final int REDIS_CONNECTION_PORT = 6379;
+  public static final int DEFAULT_REDIS_CONNECTION_PORT = 6379;
   public static final String PONG_REPLY= "+PONG\r\n";
   public static final Map<String,KeyValue> redisStore = new HashMap<>();
   public static void main(String[] args){
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    System.out.println("Logs from your program will appear here!");
     ServerSocket serverSocket = null;
     Socket clientSocket = null;
+    int port = DEFAULT_REDIS_CONNECTION_PORT;
+    if (args.length >= 2 && args[0].equalsIgnoreCase("--port")) {
+      port = Integer.parseInt(args[1]);
+    }
     try {
-      serverSocket = new ServerSocket(REDIS_CONNECTION_PORT);
+      serverSocket = new ServerSocket(port);
       serverSocket.setReuseAddress(true);
-      // Start Executor service
-      ExecutorService executorService = new ThreadPoolExecutor(1, 10, 10L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
       // wait for connection from client
       while (true) {
         clientSocket = serverSocket.accept();
