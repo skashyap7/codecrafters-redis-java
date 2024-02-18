@@ -245,12 +245,8 @@ public class Main {
       this.role = _role;
     }
     public void outputRespResponse(PrintWriter output) {
-      String roleString = String.format("role:%s", this.role);
+      String roleString = String.format("role:%s\nmaster_replid:%s\nmaster_repl_offset:%s", this.role, this.master_replid, this.master_repl_offset);
       output.printf("$%d\r\n%s\r\n", roleString.length(), roleString);
-      String master_replid = String.format("master_replid:%s", this.master_replid);
-      output.printf("$%d\r\n%s\r\n", master_replid.length(), master_replid);
-      String master_repl_offset = String.format("master_repl_offset:%s", this.master_repl_offset);
-      output.printf("$%d\r\n%s\r\n", master_repl_offset.length(), master_repl_offset);
       //output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
