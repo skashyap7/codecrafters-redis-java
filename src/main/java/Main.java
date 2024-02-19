@@ -186,10 +186,7 @@ public class Main {
     }
 
     private void executePing(PrintWriter output){
-      if (isMaster)
         output.println("+PONG\r");
-      else
-        output.println("*1\r\n$4\r\nping\r\n");
     }
 
     private void executeSet(PrintWriter output) {
