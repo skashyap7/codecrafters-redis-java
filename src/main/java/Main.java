@@ -186,7 +186,10 @@ public class Main {
     }
 
     private void executePing(PrintWriter output){
-      output.println("+PONG\r");
+      if (isMaster)
+        output.println("+PONG\r");
+      else
+        output.println("*1\r\n$4\r\nping\r\n");
     }
 
     private void executeSet(PrintWriter output) {
@@ -246,10 +249,8 @@ public class Main {
     }
     public void outputRespResponse(PrintWriter output) {
       StringBuilder stringBuilder = new StringBuilder();
-      //String roleString = String.format("role:%s\nmaster_replid:%s\nmaster_repl_offset:%s", this.role, this.master_replid, this.master_repl_offset);
       String replicationString = "# Replication";
       stringBuilder.append(String.format("%s\n", replicationString));
-      //output.printf("$%d\r\n%s\r\n", replicationString.length(), replicationString);
       try {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
