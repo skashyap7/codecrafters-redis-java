@@ -24,12 +24,14 @@ public class Server {
     private ServerSocket serverSocket;
     private  Socket clientSocket = null;
     public static final Map<String,KeyValue> redisStore = new HashMap<>();
+    public InfoReply infoReply;
 
     public Server(int port, String masterHost, int masterPort, boolean isMaster)  {
         this.port = port;
         this.masterHost = masterHost;
         this.isMaster = isMaster;
         this.masterPort = masterPort;
+        infoReply = new InfoReply(this.isMaster? "master" : "slave");
     }
 
     public void startServer() throws IOException {
@@ -234,7 +236,7 @@ public class Server {
         }
 
         private void executePsync(PrintWriter output) {
-            String response = "+FULLRESYNC <REPL_ID> 0";
+            String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("$%d\r\n%s\r\n", response.length(), response);
         }
         private void executeEcho(PrintWriter output) {
