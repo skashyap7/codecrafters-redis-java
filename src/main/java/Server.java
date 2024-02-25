@@ -88,10 +88,24 @@ public class Server {
 
     public void startHandshake() {
         // Send a PING to master
+        String replCommand1 = String.format("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n%d\r\n", this.port);
+        String replCommand2 = "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n";
         try (Socket masterSocket = new Socket(masterHost, masterPort)) {
             try (PrintWriter output = new PrintWriter(masterSocket.getOutputStream(), true)) {
                 // write PING To the output stream
                 output.print("*1\r\n$4\r\nping\r\n");
+                //  Read output
+                BufferedReader inputReader = new BufferedReader(new InputStreamReader(masterSocket.getInputStream()));
+                String responseToPing = inputReader.readLine();
+                if (responseToPing != null && responseToPing.equalsIgnoreCase("pong")) {
+                    output.print(replCommand1);
+                    String responseToReplCommand1 = inputReader.readLine();
+                    output.print(replCommand2);
+                    String responseToReplCommand2 = inputReader.readLine();
+                }
+                else {
+                    System.out.println("Failed to get response from master for  PING during handshake, response = "+ responseToPing);
+                }
             } catch (IOException e) {
                 System.out.println(e);
                 e.printStackTrace();
@@ -201,9 +215,16 @@ public class Server {
                 case "info":
                     executeInfo(output);
                     break;
+                case "replconf":
+                    sendOk(output);
+                    break;
                 default:
                     System.out.println(" Unknown command "+ command);
             }
+        }
+
+        private void sendOk(PrintWriter output) {
+            output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
         }
 
         private void executeEcho(PrintWriter output) {
@@ -222,7 +243,7 @@ public class Server {
                 expiry = System.currentTimeMillis() + Long.parseLong(this.arguments.get(3));
             }
             redisStore.put(this.arguments.get(0), new KeyValue(this.arguments.get(1), expiry));
-            output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
+            sendOk(output);
         }
 
         private void executeGet(PrintWriter output) {
