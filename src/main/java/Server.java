@@ -224,7 +224,7 @@ public class Server {
                     // Return Ok for now
                     sendOk(output);
                 case "psync":
-                    sendOk(output);
+                    executePsync(output);
                     break;
                 default:
                     System.out.println(" Unknown command "+ command);
