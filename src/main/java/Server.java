@@ -90,6 +90,7 @@ public class Server {
         // Send a PING to master
         String replCommand1 = String.format("*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n%d\r\n", this.port);
         String replCommand2 = "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n";
+        String psyncCommand = "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n";
         try (Socket masterSocket = new Socket(masterHost, masterPort)) {
             try (PrintWriter output = new PrintWriter(masterSocket.getOutputStream(), true)) {
                 // write PING To the output stream
@@ -102,6 +103,8 @@ public class Server {
                     //String responseToReplCommand1 = inputReader.readLine();
                     output.print(replCommand2);
                     //String responseToReplCommand2 = inputReader.readLine();
+                    // Send the PSYCN Command
+                    output.print(psyncCommand);
                 //}
 //              //else {
 //              //      System.out.println("Failed to get response from master for  PING during handshake, response = "+ responseToPing);
@@ -217,6 +220,8 @@ public class Server {
                     break;
                 case "replconf":
                     sendOk(output);
+                case "psync":
+                    sendOk(output);
                     break;
                 default:
                     System.out.println(" Unknown command "+ command);
@@ -227,6 +232,10 @@ public class Server {
             output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
         }
 
+        private void executePsync(PrintWriter output) {
+            String response = "+FULLRESYNC <REPL_ID> 0";
+            output.printf("$%d\r\n%s\r\n", response.length(), response);
+        }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
             System.out.println(outputStr);
