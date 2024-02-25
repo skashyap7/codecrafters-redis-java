@@ -219,6 +219,7 @@ public class Server {
                     executeInfo(output);
                     break;
                 case "replconf":
+                    // Return Ok for now
                     sendOk(output);
                 case "psync":
                     sendOk(output);
