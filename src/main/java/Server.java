@@ -95,17 +95,17 @@ public class Server {
                 // write PING To the output stream
                 output.print("*1\r\n$4\r\nping\r\n");
                 //  Read output
-                BufferedReader inputReader = new BufferedReader(new InputStreamReader(masterSocket.getInputStream()));
-                String responseToPing = inputReader.readLine();
-                if (responseToPing != null && responseToPing.equalsIgnoreCase("pong")) {
+                //BufferedReader inputReader = new BufferedReader(new InputStreamReader(masterSocket.getInputStream()));
+                //String responseToPing = inputReader.readLine();
+                //if (responseToPing != null && responseToPing.equalsIgnoreCase("pong")) {
                     output.print(replCommand1);
-                    String responseToReplCommand1 = inputReader.readLine();
+                    //String responseToReplCommand1 = inputReader.readLine();
                     output.print(replCommand2);
-                    String responseToReplCommand2 = inputReader.readLine();
-                }
-                else {
-                    System.out.println("Failed to get response from master for  PING during handshake, response = "+ responseToPing);
-                }
+                    //String responseToReplCommand2 = inputReader.readLine();
+                //}
+//              //else {
+//              //      System.out.println("Failed to get response from master for  PING during handshake, response = "+ responseToPing);
+//              //}
             } catch (IOException e) {
                 System.out.println(e);
                 e.printStackTrace();
