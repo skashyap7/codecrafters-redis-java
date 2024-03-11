@@ -239,13 +239,13 @@ public class Server {
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("%s\r\n",response);
             // Send the empty RDB file
-            String emptyData = "";
-            output.printf("$%d\r\n%s", emptyData.length(), emptyData);
+            String hexEmptyRDBFileData = "524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2";
+            output.printf("$%d\r\n%s", hexEmptyRDBFileData.length(), hexEmptyRDBFileData);
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
             System.out.println(outputStr);
-            output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr);
+            output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr.getBytes());
         }
 
         private void executePing(PrintWriter output){
