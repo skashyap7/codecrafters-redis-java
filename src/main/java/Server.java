@@ -239,7 +239,8 @@ public class Server {
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("%s\r\n",response);
             // Send the empty RDB file
-            output.printf("$%d\r\n%s", 0, "\r\n");
+            String emptyData = "\r\n";
+            output.printf("$%d\r\n%s", emptyData.length(), emptyData);
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
