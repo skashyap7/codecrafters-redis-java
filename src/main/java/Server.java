@@ -240,6 +240,10 @@ public class Server {
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
             output.printf("$%d\r\n", rdbData.length);
             output.print(rdbData);
+            int lenrdbBytesStr = rdbData.length;
+            System.out.println(rdbData[0] + " :rdbbytesstr");
+            output.write(Arrays.toString(String.format("$%d\r\n",lenrdbBytesStr).getBytes()));
+            output.write(Arrays.toString(rdbData));
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
