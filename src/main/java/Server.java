@@ -245,7 +245,6 @@ public class Server {
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
             System.out.println(outputStr);
-            output.printf("$%d\r\n%s\r\n", outputStr.length(), outputStr.getBytes());
         }
 
         private void executePing(PrintWriter output){
