@@ -242,7 +242,6 @@ public class Server {
         }
 
         private void sendEmptyFile(Socket clientSocket) {
-            try {
                 String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
                 byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
                 try {
@@ -254,9 +253,6 @@ public class Server {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
