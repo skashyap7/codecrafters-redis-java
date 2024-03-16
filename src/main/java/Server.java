@@ -235,10 +235,13 @@ public class Server {
 
         private void executePsync(PrintWriter output) {
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
+            System.out.println(" Response Sent = " + response);
             output.printf("%s\r\n",response);
             // Send the empty RDB file
             String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
+            var data = String.format("$%d\r\n%s", rdbData.length,new String(rdbData));
+            System.out.println(" Data Sent = " + data);
             output.printf("$%d\r\n%s", rdbData.length,new String(rdbData));
         }
         private void executeEcho(PrintWriter output) {
