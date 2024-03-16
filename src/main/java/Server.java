@@ -237,14 +237,14 @@ public class Server {
 
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("%s\r\n",response);
-            output.flush();
+            //output.flush();
             // Send the empty RDB file
             String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
             try {
                 clientSocket.getOutputStream().write(String.format("$%d\r\n", rdbData.length).getBytes(StandardCharsets.UTF_8));
                 clientSocket.getOutputStream().write(rdbData);
-                clientSocket.getOutputStream().flush();
+                //clientSocket.getOutputStream().flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
