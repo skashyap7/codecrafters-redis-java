@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /*
@@ -44,7 +43,6 @@ public class Server {
             while (true) {
                 clientSocket = serverSocket.accept();
                 final Socket currentSocketConnection = clientSocket;
-                // Send a response for PING
                 new Thread(() -> {
                     handleRequest(currentSocketConnection);
                 }).start();
