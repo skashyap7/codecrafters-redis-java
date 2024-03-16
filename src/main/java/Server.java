@@ -76,7 +76,7 @@ public class Server {
                 //System.out.println(" Echo command = " + clientCommand );
                 currentCommand.process(clientCommand);
                 if (currentCommand.isComandComplete()) {
-                    currentCommand.runCommand(output, clientSocket);
+                    currentCommand.runCommand(output);
                     currentCommand = new Command();
                 }
             }
@@ -200,7 +200,7 @@ public class Server {
             return (dataProcessed == lengthData);
         }
 
-        public void runCommand(PrintWriter output, Socket clientSocket) {
+        public void runCommand(PrintWriter output) {
             System.out.println(" Command = " + command);
             switch (command.toLowerCase()) {
                 case "echo":
@@ -222,7 +222,7 @@ public class Server {
                     // Return Ok for now
                     sendOk(output);
                 case "psync":
-                    executePsync(output, clientSocket);
+                    executePsync(output);
                     break;
                 default:
                     System.out.println(" Unknown command "+ command);
@@ -233,25 +233,29 @@ public class Server {
             output.printf("$%d\r\n%s\r\n", "OK".length(), "OK");
         }
 
-        private void executePsync(PrintWriter output, Socket clientSocket) {
+        private void executePsync(PrintWriter output) {
 
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("%s\r\n",response);
-            //output.flush();
-            // Send the empty RDB file
-            if (isMaster) {
+            sendEmptyFile("localhost", 6379);
+        }
+
+        private void sendEmptyFile(String replicaHost, int replicaPort) {
+            try {
+                Socket replicaSocket = new Socket(replicaHost, replicaPort);
                 String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
                 byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
                 try {
-                    clientSocket.getOutputStream().write(String.format("$%d\r\n%s", rdbData.length,new String(rdbData)).getBytes(StandardCharsets.UTF_8));
-                    //clientSocket.getOutputStream().write(rdbData);
-                    clientSocket.getOutputStream().flush();
+                    replicaSocket.getOutputStream().write(String.format("$%d\r\n", rdbData.length).getBytes(StandardCharsets.UTF_8));
+                    clientSocket.getOutputStream().write(rdbData);
+                    replicaSocket.getOutputStream().flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
             System.out.println(outputStr);
