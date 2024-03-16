@@ -246,9 +246,9 @@ public class Server {
                 String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
                 byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
                 try {
-                    replicaSocket.getOutputStream().write(String.format("$%d\r\n", rdbData.length).getBytes(StandardCharsets.UTF_8));
+                    replicaSocket.getOutputStream().write(String.format("$%s\r\n", rdbData.length).getBytes());
                     replicaSocket.getOutputStream().write(rdbData);
-                    replicaSocket.getOutputStream().flush();
+                    //replicaSocket.getOutputStream().flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
