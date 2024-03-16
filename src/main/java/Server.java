@@ -243,6 +243,7 @@ public class Server {
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
             try {
                 output.printf("$%d\r\n",rdbData.length);
+                clientSocket.getOutputStream().flush();
                 clientSocket.getOutputStream().write(rdbData);
                 clientSocket.getOutputStream().flush();
             } catch (IOException e) {
