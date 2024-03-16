@@ -237,7 +237,9 @@ public class Server {
 
             String response = "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0";
             output.printf("%s\r\n",response);
-            sendEmptyFile("localhost", 6379);
+            if (isMaster){
+                sendEmptyFile("localhost", 6379);
+            }
         }
 
         private void sendEmptyFile(String replicaHost, int replicaPort) {
