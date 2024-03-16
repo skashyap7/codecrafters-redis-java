@@ -242,7 +242,7 @@ public class Server {
             int lenrdbBytesStr = rdbData.length;
             var data = String.format("$%d\r\n%s",lenrdbBytesStr, Arrays.toString(rdbData)).getBytes(StandardCharsets.UTF_8);
             System.out.println(" Data = " + data);
-            output.write(Arrays.toString(data));
+            output.write(new String(data));
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
