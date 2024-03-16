@@ -247,7 +247,7 @@ public class Server {
                 byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
                 try {
                     replicaSocket.getOutputStream().write(String.format("$%d\r\n", rdbData.length).getBytes(StandardCharsets.UTF_8));
-                    clientSocket.getOutputStream().write(rdbData);
+                    replicaSocket.getOutputStream().write(rdbData);
                     replicaSocket.getOutputStream().flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
