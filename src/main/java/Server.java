@@ -239,9 +239,8 @@ public class Server {
             String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
             int lenrdbBytesStr = rdbData.length;
-            System.out.println(rdbData[0] + " :rdbbytesstr");
-            output.print(String.format("$%d\r\n",lenrdbBytesStr).getBytes());
-            output.print(rdbData);
+            output.write(Arrays.toString(String.format("$%d\r\n",lenrdbBytesStr).getBytes()));
+            output.write(Arrays.toString(rdbData));
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
