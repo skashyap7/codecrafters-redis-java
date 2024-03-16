@@ -239,10 +239,7 @@ public class Server {
             // Send the empty RDB file
             String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
             byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
-            int lenrdbBytesStr = rdbData.length;
-            var data = String.format("$%d\r\n%s",lenrdbBytesStr, Arrays.toString(rdbData)).getBytes(StandardCharsets.UTF_8);
-            System.out.println(" Data = " + data);
-            output.write(new String(data));
+            output.printf("$%d\r\n%s", rdbData.length,new String(rdbData));
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
