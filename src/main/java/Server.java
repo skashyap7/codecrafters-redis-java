@@ -74,7 +74,7 @@ public class Server {
                 //System.out.println(" Echo command = " + clientCommand );
                 currentCommand.process(clientCommand);
                 if (currentCommand.isComandComplete()) {
-                    currentCommand.runCommand(output, clientSocket);
+                    currentCommand.runCommand(output);
                     currentCommand = new Command();
                 }
             }
@@ -198,7 +198,7 @@ public class Server {
             return (dataProcessed == lengthData);
         }
 
-        public void runCommand(PrintWriter output, Socket clientSocket) {
+        public void runCommand(PrintWriter output) {
             System.out.println(" Command = " + command);
             switch (command.toLowerCase()) {
                 case "echo":
@@ -237,22 +237,27 @@ public class Server {
             output.printf("%s\r\n",response);
             if (isMaster){
                 // adding some comments
-                sendEmptyFile(clientSocket);
+                sendEmptyFile("localhost", 6380);
             }
         }
 
-        private void sendEmptyFile(Socket clientSocket) {
+        private void sendEmptyFile(String replicaHost, int replicaPort) {
+            try {
+                Socket replicaSocket = new Socket(replicaHost, replicaPort);
                 String EMPTY_RDB_BASE64 = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
                 byte[] rdbData = Base64.getDecoder().decode(EMPTY_RDB_BASE64);
                 try {
                     System.out.println("Length : " + rdbData.length);
                     System.out.println(" Data : " + Arrays.toString(rdbData));
-                    clientSocket.getOutputStream().write(String.format("$%s\r\n", rdbData.length).getBytes());
-                    clientSocket.getOutputStream().write(rdbData);
+                    replicaSocket.getOutputStream().write(String.format("$%s\r\n", rdbData.length).getBytes());
+                    replicaSocket.getOutputStream().write(rdbData);
                     //replicaSocket.getOutputStream().flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         private void executeEcho(PrintWriter output) {
             String outputStr = String.join(" ",arguments);
